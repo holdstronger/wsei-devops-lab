@@ -65,4 +65,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Checkout repository
-    - uses: actions/checko
+    - uses: actions/checkout@v4
+    
+    # Setup Node.js with built-in cache
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: lab5/sample-ci/frontend/package-lock.json
+    
+    # Install dependencies using npm ci
+    - name: Install dependencies
+      run: |
+        cd lab5/sample-ci/frontend
+        npm ci
+    
+    # Run frontend tests
+    - name: Run tests
+      run: |
+        cd lab5/sample-ci/frontend
+        npm test
+    
+    # Build frontend
+    - name: Build
+      run: |
+        cd lab5/sample-ci/frontend
+        npm run build
+    
+    # Upload frontend artifacts
+    - name: Upload frontend artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend
+        path: lab5/sample-ci/frontend/dist
